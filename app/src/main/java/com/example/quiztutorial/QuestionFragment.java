@@ -198,24 +198,24 @@ public class QuestionFragment extends Fragment implements IQuestion {
 
     @Override
     public void showCorrectAnswer() {
-        String[] correctAnswer = question.getCorrectAnswer().split(",");
+
+            String[] correctAnswer = question.getCorrectAnswer().split(",");
+
         for(String answer:correctAnswer) {
             if (answer.equals("A")) {
                 ckbA.setTypeface(null, Typeface.BOLD);
                 ckbA.setTextColor(Color.RED);
-            }
-            else if (answer.equals("B")) {
+            } else if (answer.equals("B")) {
                 ckbB.setTypeface(null, Typeface.BOLD);
                 ckbB.setTextColor(Color.RED);
-            }
-            else if (answer.equals("C")) {
+            } else if (answer.equals("C")) {
                 ckbC.setTypeface(null, Typeface.BOLD);
                 ckbC.setTextColor(Color.RED);
-            }
-            else if (answer.equals("D")) {
+            } else if (answer.equals("D")) {
                 ckbD.setTypeface(null, Typeface.BOLD);
                 ckbD.setTextColor(Color.RED);
             }
+
         }
 
     }

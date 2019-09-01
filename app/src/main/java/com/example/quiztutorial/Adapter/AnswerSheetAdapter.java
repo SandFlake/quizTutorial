@@ -16,9 +16,6 @@ import com.example.quiztutorial.R;
 
 import java.util.List;
 
-
-
-
 public class AnswerSheetAdapter extends RecyclerView.Adapter<AnswerSheetAdapter.MyViewHolder> {
 
     Context context;

@@ -28,6 +28,8 @@ import com.github.javiersantos.materialstyleddialogs.MaterialStyledDialog;
 
 import java.util.concurrent.TimeUnit;
 
+import javax.xml.transform.Result;
+
 
 public class ResultActivity extends AppCompatActivity {
 
@@ -209,7 +211,7 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     private void doQuizAgain() {
-        new MaterialStyledDialog.Builder(this)
+        new MaterialStyledDialog.Builder(ResultActivity.this)
                 .setTitle("Try quiz again?")
                 .setIcon(R.drawable.ic_sentiment_very_satisfied_pink_24dp)
                 .setDescription("Sure you want to delete this data?")
