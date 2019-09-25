@@ -7,6 +7,11 @@ public class CurrentQuestion {
     private int questionIndex;
     private Common.ANSWER_TYPE type;
 
+    public CurrentQuestion(int questionIndex, Common.ANSWER_TYPE type) {
+        this.questionIndex = questionIndex;
+        this.type = type;
+    }
+
     public int getQuestionIndex() {
         return questionIndex;
     }
@@ -23,8 +28,5 @@ public class CurrentQuestion {
         this.type = type;
     }
 
-    public CurrentQuestion(int questionIndex, Common.ANSWER_TYPE type) {
-        this.questionIndex = questionIndex;
-        this.type = type;
-    }
+
 }

@@ -28,12 +28,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         toolbar = (Toolbar)findViewById(R.id.toolbar);
-        toolbar.setTitle("EDMT Quiz 2019");
+        toolbar.setTitle("Chris Quiz 2019");
         setSupportActionBar(toolbar);
 
         recycler_category = (RecyclerView)findViewById(R.id.recycler_category);
         recycler_category.setHasFixedSize(true);
-        recycler_category.setLayoutManager(new GridLayoutManager(this, 2));
+        recycler_category.setLayoutManager(new GridLayoutManager(this, 1));
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);

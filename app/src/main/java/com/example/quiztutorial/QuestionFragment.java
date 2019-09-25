@@ -9,6 +9,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,8 @@ import com.example.quiztutorial.Model.CurrentQuestion;
 import com.example.quiztutorial.Model.Question;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+
+import static androidx.constraintlayout.widget.Constraints.TAG;
 
 
 /**
@@ -52,10 +55,15 @@ public class QuestionFragment extends Fragment implements IQuestion {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        // Inflate layout for this fragment
         View itemView =  inflater.inflate(R.layout.fragment_question, container, false);
 
+        // Get question
         questionIndex =  getArguments().getInt("index", -1);
-        question = Common.questionList.get(questionIndex);
+
+        if (Common.questionList.size() > 0) {
+            question = Common.questionList.get(questionIndex);
+        }
 
         if (question != null ) {
 
@@ -91,6 +99,7 @@ public class QuestionFragment extends Fragment implements IQuestion {
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                     if(b) {
                         Common.selected_values.add(ckbA.getText().toString());
+                        Log.d(TAG, "onCheckedChanged: can find A when changed");
                     }
                     else {
                         Common.selected_values.remove(ckbA.getText().toString());
@@ -110,6 +119,7 @@ public class QuestionFragment extends Fragment implements IQuestion {
                     }
                     else {
                         Common.selected_values.remove(ckbB.getText().toString());
+                        Log.d(TAG, "onCheckedChanged: can find and remove b when else statement");
                     }
 
                 }
@@ -122,6 +132,7 @@ public class QuestionFragment extends Fragment implements IQuestion {
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                     if(b) {
                         Common.selected_values.add(ckbC.getText().toString());
+                        Log.d(TAG, "onCheckedChanged: getting to check box C");
                     }
                     else {
                         Common.selected_values.remove(ckbC.getText().toString());
@@ -146,7 +157,6 @@ public class QuestionFragment extends Fragment implements IQuestion {
             });
 
 
-
         }
 
         return itemView;
@@ -155,9 +165,13 @@ public class QuestionFragment extends Fragment implements IQuestion {
     @Override
     public CurrentQuestion getSelectedAnswer() {
 
-        CurrentQuestion currentQuestion = new CurrentQuestion(questionIndex, Common.ANSWER_TYPE.NO_ANSWER);
+        // Should return the state of the question
+        // So right, wrong or unanswered
+
+        CurrentQuestion currentQuestion = new CurrentQuestion(questionIndex, Common.ANSWER_TYPE.NO_ANSWER); // No answer is default
         StringBuilder result = new StringBuilder();
         if (Common.selected_values.size() > 1) {
+            // if more than one answer option is ticked
             Object[] arrayAnswer = Common.selected_values.toArray();
             for (int i = 0; i < arrayAnswer.length; i++) {
                 if (i < arrayAnswer.length - 1) {
@@ -169,18 +183,23 @@ public class QuestionFragment extends Fragment implements IQuestion {
         }
 
         else if (Common.selected_values.size() == 1) {
+            // If only option is picked
                     Object[] arrayAnswer = Common.selected_values.toArray();
                     result.append((String)arrayAnswer[0]).substring(0,1);
         }
 
         if (question != null ){
-            if (!TextUtils.isEmpty(result)) {
-                if(result.toString().equals(question.getCorrectAnswer())) {
+            // compare correctAnswer with users answer
+            if (!(TextUtils.isEmpty(result))) {
+                if(result.toString().equalsIgnoreCase(question.getCorrectAnswer())) {
                     currentQuestion.setType(Common.ANSWER_TYPE.RIGHT_ANSWER);
+                    Log.d(TAG, "getSelectedAnswer: user chose the correct answer");
                 }
                 else {
                     currentQuestion.setType(Common.ANSWER_TYPE.WRONG_ANSWER);
+                    Log.d(TAG, "getSelectedAnswer: user chose the wrong answer");
                 }
+
             }
             else {
                 currentQuestion.setType(Common.ANSWER_TYPE.NO_ANSWER);
@@ -192,7 +211,7 @@ public class QuestionFragment extends Fragment implements IQuestion {
             currentQuestion.setType(Common.ANSWER_TYPE.NO_ANSWER);
         }
 
-        Common.selected_values.clear();
+        Common.selected_values.clear(); // when comparison is finished, clear the selected values
         return currentQuestion;
     }
 
@@ -204,16 +223,20 @@ public class QuestionFragment extends Fragment implements IQuestion {
         for(String answer:correctAnswer) {
             if (answer.equals("A")) {
                 ckbA.setTypeface(null, Typeface.BOLD);
-                ckbA.setTextColor(Color.RED);
+                ckbA.setTextColor(Color.GREEN);
+                Log.d(TAG, "showCorrectAnswer: answer is A orange");
             } else if (answer.equals("B")) {
                 ckbB.setTypeface(null, Typeface.BOLD);
-                ckbB.setTextColor(Color.RED);
+                ckbB.setTextColor(Color.GREEN);
+                Log.d(TAG, "showCorrectAnswer: answer is b orange");
             } else if (answer.equals("C")) {
                 ckbC.setTypeface(null, Typeface.BOLD);
-                ckbC.setTextColor(Color.RED);
+                ckbC.setTextColor(Color.GREEN);
+                Log.d(TAG, "showCorrectAnswer: answer is C orange");
             } else if (answer.equals("D")) {
                 ckbD.setTypeface(null, Typeface.BOLD);
-                ckbD.setTextColor(Color.RED);
+                ckbD.setTextColor(Color.GREEN);
+                Log.d(TAG, "showCorrectAnswer: answer is D orange");
             }
 
         }

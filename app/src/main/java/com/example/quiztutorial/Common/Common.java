@@ -14,7 +14,7 @@ import java.util.TreeSet;
 
 public class Common {
 
-    public static final int TOTAL_TIME = 10*1000 ; //10 sec
+    public static final int TOTAL_TIME = 60*1000 ; //60 sec
     public static final String KEY_BACK_FROM_RESULT = "BACK_FROM_RESULT";
     public static final String KEY_GO_TO_QUESTION = "GO_TO_QUESTION";
 

@@ -17,7 +17,6 @@ import com.example.quiztutorial.Model.Category;
 import com.example.quiztutorial.QuestionActivity;
 import com.example.quiztutorial.R;
 
-import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -56,7 +55,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
         TextView txt_category_name;
 
 
-        public MyViewHolder(@NonNull View itemView) {
+        public MyViewHolder(@NonNull final View itemView) {
             super(itemView);
             card_category = (CardView)itemView.findViewById(R.id.card_category);
             txt_category_name = (TextView)itemView.findViewById(R.id.txt_category_name);

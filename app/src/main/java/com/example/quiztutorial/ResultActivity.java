@@ -37,8 +37,8 @@ public class ResultActivity extends AppCompatActivity {
     TextView txt_timer, txt_result, txt_right_answer;
     Button btn_filter_total, btn_filter_right_answer, btn_filter_wrong_answer, btn_filter_no_answer;
     RecyclerView recycler_result;
-
     ResultGridAdapter adapter, filtered_adapter;
+
 
     BroadcastReceiver backToQuestion = new BroadcastReceiver() {
         @Override
@@ -74,7 +74,7 @@ public class ResultActivity extends AppCompatActivity {
 
         txt_result = (TextView)findViewById(R.id.txt_result);
         txt_right_answer = (TextView)findViewById(R.id.txt_right_answer);
-        txt_timer = (TextView)findViewById(R.id.txt_timer);
+        txt_timer = (TextView)findViewById(R.id.txt_time);
 
         btn_filter_no_answer = (Button)findViewById(R.id.btn_filter_no_answer);
         btn_filter_right_answer = (Button)findViewById(R.id.btn_filter_right_answer);
@@ -102,6 +102,7 @@ public class ResultActivity extends AppCompatActivity {
         btn_filter_wrong_answer.setText(new StringBuilder("").append(Common.wrong_answer_count));
         btn_filter_no_answer.setText(new StringBuilder("").append(Common.no_answer_count));
 
+        //Calculate result
         int percent = (Common.right_answer_count*100)/Common.questionList.size();
 
         if(percent > 90) {

@@ -19,13 +19,14 @@ import java.util.List;
 public class AnswerSheetAdapter extends RecyclerView.Adapter<AnswerSheetAdapter.MyViewHolder> {
 
     Context context;
+    List<CurrentQuestion> currentQuestionList;
 
     public AnswerSheetAdapter(Context context, List<CurrentQuestion> currentQuestionList) {
         this.context = context;
         this.currentQuestionList = currentQuestionList;
     }
 
-    List<CurrentQuestion> currentQuestionList;
+
 
     @NonNull
     @Override
@@ -37,13 +38,16 @@ public class AnswerSheetAdapter extends RecyclerView.Adapter<AnswerSheetAdapter.
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
-        if (currentQuestionList.get(position).getType() == Common.ANSWER_TYPE.RIGHT_ANSWER)
-            holder.question_item.setBackgroundResource(R.drawable.grid_question_right_answer);
-        else if (currentQuestionList.get(position).getType() == Common.ANSWER_TYPE.WRONG_ANSWER)
-            holder.question_item.setBackgroundResource(R.drawable.grid_question_wrong_answer);
-        else
-            holder.question_item.setBackgroundResource(R.drawable.grid_question_no_answer);
-    }
+        //if ((currentQuestionList.get(position) != null) && (holder.question_item != null)) {
+
+            if (currentQuestionList.get(position).getType() == Common.ANSWER_TYPE.RIGHT_ANSWER)
+                holder.question_item.setBackgroundResource(R.drawable.grid_question_right_answer);
+            else if (currentQuestionList.get(position).getType() == Common.ANSWER_TYPE.WRONG_ANSWER)
+                holder.question_item.setBackgroundResource(R.drawable.grid_question_wrong_answer);
+            else
+                holder.question_item.setBackgroundResource(R.drawable.grid_question_no_answer);
+        }
+    //}
 
     @Override
     public int getItemCount() {

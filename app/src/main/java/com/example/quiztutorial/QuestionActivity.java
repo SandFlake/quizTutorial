@@ -12,6 +12,7 @@ import com.example.quiztutorial.Adapter.AnswerSheetAdapter;
 import com.example.quiztutorial.Adapter.AnswerSheetHelperAdapter;
 import com.example.quiztutorial.Adapter.QuestionFragmentAdapter;
 import com.example.quiztutorial.Common.Common;
+import com.example.quiztutorial.Common.SpaceDecoration;
 import com.example.quiztutorial.DBHelper.DBHelper;
 import com.example.quiztutorial.Model.CurrentQuestion;
 import com.example.quiztutorial.Model.Question;
@@ -56,6 +57,7 @@ public class QuestionActivity extends AppCompatActivity
     private static final int CODE_GET_RESULT = 9999;
     int time_play = Common.TOTAL_TIME;
     boolean isAnswerModeView = false;
+    boolean isDoItAgainMode = false;
 
     TextView txt_right_answer, txt_timer, txt_wrong_answer;
 
@@ -98,16 +100,25 @@ public class QuestionActivity extends AppCompatActivity
         toolbar.setTitle(Common.selectedCategory.getName());
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        isDoItAgainMode = false;
+        drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-      /*  //nav_header_question.xml is the file where this button is
-        Button btn_done = (Button)findViewById(R.id.btn_done);
+        View hView = navigationView.getHeaderView(0);
+        answer_sheet_helper = hView.findViewById(R.id.answer_sheet);
+        answer_sheet_helper.setHasFixedSize(true);
+        answer_sheet_helper.setLayoutManager(new GridLayoutManager(this, 3));
+        answer_sheet_helper.addItemDecoration(new SpaceDecoration(2));
+        answerSheetHelperAdapter = new AnswerSheetHelperAdapter(this, Common.answerSheetList);
+        answer_sheet_helper.setAdapter(answerSheetHelperAdapter);
+
+        //nav_header_question.xml is the file where this button is
+        Button btn_done = hView.findViewById(R.id.btn_done);
         btn_done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -136,13 +147,25 @@ public class QuestionActivity extends AppCompatActivity
                 } else
                     finishGame();
             }
-        });*/
+        });
+
+
+        Common.fragmentList.clear();
+        Common.questionList.clear();
+        Common.right_answer_count = 0;
+        Common.wrong_answer_count = 0;
 
         //Take questions from DB
         takeQuestion();
+    }
+
+    private void setUpQuestion() {
+
 
         if (Common.questionList.size() > 0) {
 
+            // in git hub almost same quiz
+             //  txt_right_answer = (TextView)findViewById(R.id.txt_right_answer);
             txt_right_answer = (TextView) findViewById(R.id.txt_question_right);
             txt_timer = (TextView) findViewById(R.id.txt_timer);
 
@@ -157,17 +180,12 @@ public class QuestionActivity extends AppCompatActivity
             answer_sheet_view = (RecyclerView) findViewById(R.id.grid_answer);
             answer_sheet_view.setHasFixedSize(true);
 
-            // nav header question has a none otherwised use recyclerview.. what else could it be
-            answer_sheet_helper = (RecyclerView) findViewById(R.id.answer_sheet);
-             //answer_sheet_helper.setHasFixedSize(true);
-
             if (Common.questionList.size() > 5)
                 answer_sheet_view.setLayoutManager(new GridLayoutManager(this, Common.questionList.size() / 2));
+
             answerSheetAdapter = new AnswerSheetAdapter(this, Common.answerSheetList);
             answer_sheet_view.setAdapter(answerSheetAdapter);
 
-            answerSheetHelperAdapter = new AnswerSheetHelperAdapter(this, Common.answerSheetList);
-            answer_sheet_helper.setAdapter(answerSheetHelperAdapter);
 
             viewPager = (ViewPager) findViewById(R.id.viewpager);
             tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
@@ -239,10 +257,22 @@ public class QuestionActivity extends AppCompatActivity
                     }
 
                     CurrentQuestion question_state = questionFragment.getSelectedAnswer();
-                    Common.answerSheetList.set(page, question_state);
-                    answerSheetAdapter.notifyDataSetChanged();
+                  //  if (!isAnswerModeView) {
+                        Common.answerSheetList.set(page, question_state); // Sets question answer for answer sheet
+                        answerSheetAdapter.notifyDataSetChanged(); // Changes colour in answer sheet
+                        answerSheetHelperAdapter.notifyDataSetChanged();
 
-                    countCorrectAnswers();
+                        countCorrectAnswers();
+                  //  }
+
+                   /* if(isAnswerModeView){
+                        questionFragment.showCorrectAnswer();
+                        questionFragment.disableAnswers();
+                    }
+
+                    if(isDoItAgainMode){
+                        questionFragment.resetQuestion();
+                    }*/
 
                     txt_right_answer.setText(new StringBuilder(String.format("%d", Common.right_answer_count))
                             .append("/")
@@ -267,28 +297,35 @@ public class QuestionActivity extends AppCompatActivity
             });
 
         }
+
     }
 
     private void finishGame() {
         int i = viewPager.getCurrentItem(); //Could be i or position, remember you do backwards from him
         QuestionFragment questionFragment = Common.fragmentList.get(i);
         CurrentQuestion question_state = questionFragment.getSelectedAnswer();
-        Common.answerSheetList.set(i, question_state);
-        answerSheetAdapter.notifyDataSetChanged(); // changes colour in answer sheet
-        answerSheetHelperAdapter.notifyDataSetChanged();
 
+       if(!isAnswerModeView) {
+            Common.answerSheetList.set(i, question_state);
+            answerSheetAdapter.notifyDataSetChanged(); // changes colour in answer sheet
+            answerSheetHelperAdapter.notifyDataSetChanged();
+            Common.countDownTimer.cancel();
 
-        countCorrectAnswers();
+            countCorrectAnswers();
 
-        txt_right_answer.setText(new StringBuilder(String.format("%d", Common.right_answer_count))
-                .append("/")
-                .append(String.format("%d", Common.questionList.size())).toString());
+            txt_right_answer.setText(new StringBuilder(String.format("%d", Common.right_answer_count))
+                    .append("/")
+                    .append(String.format("%d", Common.questionList.size())).toString());
 
-        txt_wrong_answer.setText(String.valueOf(Common.wrong_answer_count));
+            txt_wrong_answer.setText(String.valueOf(Common.wrong_answer_count));
+       }
 
-        if (question_state.getType() == Common.ANSWER_TYPE.NO_ANSWER) {
-            questionFragment.showCorrectAnswer();
-            questionFragment.disableAnswers();
+        if(question_state!=null) {
+
+            if (question_state.getType() == Common.ANSWER_TYPE.NO_ANSWER) {
+                questionFragment.showCorrectAnswer();
+                questionFragment.disableAnswers();
+            }
         }
 
         //navigate to ResultActivity
@@ -300,20 +337,22 @@ public class QuestionActivity extends AppCompatActivity
 
         startActivityForResult(intent, CODE_GET_RESULT);
 
-
     }
 
     private void countCorrectAnswers() {
+        // Reset the variable
         Common.right_answer_count = Common.wrong_answer_count = 0;
 
         for (CurrentQuestion item : Common.answerSheetList) {
-            if (item.getType() == Common.ANSWER_TYPE.RIGHT_ANSWER) {
-                Common.right_answer_count++;
-            } else if (item.getType() == Common.ANSWER_TYPE.WRONG_ANSWER) {
-                Common.wrong_answer_count++;
+           // if (item!=null) {
+                if (item.getType() == Common.ANSWER_TYPE.RIGHT_ANSWER) {
+                    Common.right_answer_count++;
+                } else if (item.getType() == Common.ANSWER_TYPE.WRONG_ANSWER) {
+                    Common.wrong_answer_count++;
+                }
             }
         }
-    }
+   // }
 
     private void genFragmentList() {
         for (int i = 0; i < Common.questionList.size(); i++) {
@@ -362,6 +401,7 @@ public class QuestionActivity extends AppCompatActivity
 
                 @Override
                 public void onFinish() {
+                    finishGame();
 
                 }
             }.start();
@@ -370,6 +410,10 @@ public class QuestionActivity extends AppCompatActivity
     }
 
     private void takeQuestion() {
+        //just added from git tutorial
+        Common.questionList.clear();
+        Common.selected_values.clear();
+
         Common.questionList = DBHelper.getInstance(this).getQuestionByCategory(Common.selectedCategory.getId());
         if (Common.questionList.size() == 0) {
             new MaterialStyledDialog.Builder(this)
@@ -395,7 +439,7 @@ public class QuestionActivity extends AppCompatActivity
             for (int i = 0; i < Common.questionList.size(); i++) {
                 Common.answerSheetList.add(new CurrentQuestion(i, Common.ANSWER_TYPE.NO_ANSWER));
             }
-        }
+        } setUpQuestion();
     }
 
     @Override
@@ -414,7 +458,7 @@ public class QuestionActivity extends AppCompatActivity
         MenuItem item = menu.findItem(R.id.menu_wrong_answer);
         ConstraintLayout constraintLayout = (ConstraintLayout) item.getActionView();
         txt_wrong_answer = (TextView) constraintLayout.findViewById(R.id.txt_wrong_answer);
-        txt_wrong_answer.setText(String.valueOf(0));
+        txt_wrong_answer.setText(String.valueOf(Common.wrong_answer_count));
 
         return true;
     }
@@ -498,6 +542,19 @@ public class QuestionActivity extends AppCompatActivity
                     isAnswerModeView = true;
                     Common.countDownTimer.cancel();
 
+                    int position = viewPager.getCurrentItem();
+                    QuestionFragment questionFragment = Common.fragmentList.get(position);
+                    CurrentQuestion question_state = questionFragment.getSelectedAnswer();
+
+
+                    if(question_state!=null)
+                    {
+                        if (question_state.getType() == Common.ANSWER_TYPE.NO_ANSWER || question_state.getType() == Common.ANSWER_TYPE.WRONG_ANSWER)
+                        {
+                            questionFragment.showCorrectAnswer();
+                            questionFragment.disableAnswers();
+                        }
+                    }
                     txt_wrong_answer.setVisibility(View.GONE);
                     txt_right_answer.setVisibility(View.GONE);
                     txt_timer.setVisibility(View.GONE);
@@ -519,8 +576,12 @@ public class QuestionActivity extends AppCompatActivity
                         }
                     } else if (action.equals("doitagain")) {
                         viewPager.setCurrentItem(0);
+                        isDoItAgainMode = true;
 
                         isAnswerModeView = false;
+                        Common.right_answer_count = 0;
+                        Common.wrong_answer_count = 0;
+                        Common.selected_values.clear();
                         countTimer();
 
                         txt_wrong_answer.setVisibility(View.VISIBLE);

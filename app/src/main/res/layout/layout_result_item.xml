@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Button
     xmlns:android="http://schemas.android.com/apk/res/android"
-   android:id="@+id/btn_question"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/btn_question"
     android:textColor="@android:color/white"
     android:text="Question 1"
     android:icon="@android:color/white"

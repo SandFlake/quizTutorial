@@ -5,7 +5,6 @@ public class Question {
     private int id;
     private String questionText, questionImage, answerA, answerB, answerC, answerD, correctAnswer;
     private boolean isQuestionImage;
-
     private int categoryId;
 
     public Question(){

@@ -50,7 +50,6 @@ public class AnswerSheetHelperAdapter extends RecyclerView.Adapter<AnswerSheetHe
         else
             holder.layout_wrapper.setBackgroundResource(R.drawable.grid_question_no_answer);
 
-
         holder.setiRecyclerHelperClick(new IRecyclerHelperClick() {
             @Override
             public void onClick(View view, int position) {
