@@ -1,6 +1,7 @@
 package com.example.quiztutorial;
 
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.media.Image;
@@ -43,6 +44,7 @@ public class QuestionFragment extends Fragment implements IQuestion {
 
     Question question;
     int questionIndex=-1;
+    Context context;
 
 
 
@@ -67,11 +69,11 @@ public class QuestionFragment extends Fragment implements IQuestion {
 
         if (question != null ) {
 
-            layout_image = (FrameLayout) itemView.findViewById(R.id.layout_image);
-            progressBar = (ProgressBar)itemView.findViewById(R.id.progress_bar);
+            layout_image =  itemView.findViewById(R.id.layout_image);
+            progressBar = itemView.findViewById(R.id.progress_bar);
 
             if (question.getIsQuestionImage()) {
-                ImageView img_question = (ImageView)itemView.findViewById(R.id.img_question);
+                ImageView img_question = itemView.findViewById(R.id.img_question);
                 Picasso.get().load(question.getQuestionImage()).into(img_question, new Callback() {
                     @Override
                     public void onSuccess() {
@@ -89,17 +91,18 @@ public class QuestionFragment extends Fragment implements IQuestion {
             else  {
                 layout_image.setVisibility(View.GONE);
             }
-            txt_question_text = (TextView) itemView.findViewById(R.id.txt_question_text);
+            txt_question_text = itemView.findViewById(R.id.txt_question_text);
             txt_question_text.setText(question.getQuestionText());
 
-            ckbA = (CheckBox) itemView.findViewById(R.id.ckbA);
+            ckbA = itemView.findViewById(R.id.ckbA);
             ckbA.setText(question.getAnswerA());
             ckbA.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                     if(b) {
                         Common.selected_values.add(ckbA.getText().toString());
-                        Log.d(TAG, "onCheckedChanged: can find A when changed");
+                        Log.d(TAG, "onCheckedChanged: can find A when changed ckbA = "
+                        + ckbA.getText().toString());
                     }
                     else {
                         Common.selected_values.remove(ckbA.getText().toString());
@@ -109,13 +112,15 @@ public class QuestionFragment extends Fragment implements IQuestion {
             });
 
 
-            ckbB = (CheckBox) itemView.findViewById(R.id.ckbB);
+            ckbB =  itemView.findViewById(R.id.ckbB);
             ckbB.setText(question.getAnswerB());
             ckbB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                     if(b) {
                         Common.selected_values.add(ckbB.getText().toString());
+                        Log.d(TAG, "onCheckedChanged: ckbB answer = "
+                                + ckbB.getText().toString());
                     }
                     else {
                         Common.selected_values.remove(ckbB.getText().toString());
@@ -125,14 +130,15 @@ public class QuestionFragment extends Fragment implements IQuestion {
                 }
             });
 
-            ckbC = (CheckBox) itemView.findViewById(R.id.ckbC);
+            ckbC = itemView.findViewById(R.id.ckbC);
             ckbC.setText(question.getAnswerC());
             ckbC.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                     if(b) {
                         Common.selected_values.add(ckbC.getText().toString());
-                        Log.d(TAG, "onCheckedChanged: getting to check box C");
+                        Log.d(TAG, "onCheckedChanged: getting to check box C = " +
+                                ckbC.getText().toString());
                     }
                     else {
                         Common.selected_values.remove(ckbC.getText().toString());
@@ -141,13 +147,15 @@ public class QuestionFragment extends Fragment implements IQuestion {
                 }
             });
 
-            ckbD = (CheckBox) itemView.findViewById(R.id.ckbD);
+            ckbD = itemView.findViewById(R.id.ckbD);
             ckbD.setText(question.getAnswerD());
             ckbD.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                     if(b) {
                         Common.selected_values.add(ckbD.getText().toString());
+                        Log.d(TAG, "onCheckedChanged: ckb D found = " +
+                                ckbD.getText().toString());
                     }
                     else {
                         Common.selected_values.remove(ckbD.getText().toString());
@@ -173,19 +181,21 @@ public class QuestionFragment extends Fragment implements IQuestion {
         if (Common.selected_values.size() > 1) {
             // if more than one answer option is ticked
             Object[] arrayAnswer = Common.selected_values.toArray();
-            for (int i = 0; i < arrayAnswer.length; i++) {
+            for (int i = 0; i < arrayAnswer.length; i++)
                 if (i < arrayAnswer.length - 1) {
-                    result.append(new StringBuilder(((String) arrayAnswer[i]).substring(0, 1)).append(","));
+                    result.append(new StringBuilder(((String)arrayAnswer[i]).substring(0, 1)).append(","));
+                    Log.d(TAG, "getSelectedAnswer Multiple: " + result);
                 } else {
-                    result.append(new StringBuilder((String) arrayAnswer[i]).substring(0, 1));
+                    result.append(new StringBuilder((String)arrayAnswer[i]).substring(0, 1));
+                    Log.d(TAG, "getSelectedAnswer: multiple else " + result);
                 }
-            }
         }
 
         else if (Common.selected_values.size() == 1) {
             // If only option is picked
                     Object[] arrayAnswer = Common.selected_values.toArray();
-                    result.append((String)arrayAnswer[0]).substring(0,1);
+                    result.append(((String)arrayAnswer[0]).substring(0,1));
+            Log.d(TAG, "getSelectedAnswer: One choice " + result);
         }
 
         if (question != null ){
@@ -193,11 +203,13 @@ public class QuestionFragment extends Fragment implements IQuestion {
             if (!(TextUtils.isEmpty(result))) {
                 if(result.toString().equalsIgnoreCase(question.getCorrectAnswer())) {
                     currentQuestion.setType(Common.ANSWER_TYPE.RIGHT_ANSWER);
-                    Log.d(TAG, "getSelectedAnswer: user chose the correct answer");
+                    Log.d(TAG, "getSelectedAnswer: user chose the correct answer " +
+                            result);
                 }
                 else {
                     currentQuestion.setType(Common.ANSWER_TYPE.WRONG_ANSWER);
-                    Log.d(TAG, "getSelectedAnswer: user chose the wrong answer");
+                    Log.d(TAG, "getSelectedAnswer: user chose the wrong answer "
+                    + result.toString());
                 }
 
             }
